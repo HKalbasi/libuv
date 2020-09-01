@@ -577,6 +577,20 @@ if(UNIX OR MINGW)
   install(TARGETS uv_a ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
+
+# wasm
+
+if (${CMAKE_SYSTEM_NAME} MATCHES "Emscripten")
+    set(CMAKE_C_COMPILER "emcc")
+    set_target_properties(uv PROPERTIES LINK_FLAGS "-s USE_PTHREADS=1")
+    set_target_properties(uv_a PROPERTIES LINK_FLAGS "-s USE_PTHREADS=1")
+    if (LIBUV_BUILD_TESTS)
+      set_target_properties(uv_run_tests PROPERTIES LINK_FLAGS "-s USE_PTHREADS=1")
+      set_target_properties(uv_run_tests_a PROPERTIES LINK_FLAGS "-s USE_PTHREADS=1")
+      set_target_properties(uv_run_benchmarks_a PROPERTIES LINK_FLAGS "-s USE_PTHREADS=1 -s WASM=1")
+    endif ()
+endif ()
+
 if(MSVC)
   install(DIRECTORY include/ DESTINATION include)
   install(FILES LICENSE DESTINATION .)
